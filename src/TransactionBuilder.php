@@ -37,7 +37,7 @@ class TransactionBuilder
      * @return array
      * @throws TronException
      */
-    public function sendTrx(string $to, float $amount, string $from = null, string $message = null)
+    public function sendTrx(string $to, float $amount, ?string $from = null, ?string $message = null)
     {
         if ($amount < 0) {
             throw new TronException('Invalid amount provided');
@@ -61,7 +61,7 @@ class TransactionBuilder
         ];
 
         if(!is_null($message)) {
-            $params['extra_data'] = $this->tron->stringUtf8toHex($message);
+            $options['extra_data'] = $this->tron->stringUtf8toHex($message);
         }
 
         return $this->tron->getManager()->request('wallet/createtransaction', $options);
@@ -258,7 +258,7 @@ class TransactionBuilder
      * @return array
      * @throws TronException
      */
-    public function freezeBalance(float $amount = 0, int $duration = 3, string $resource = 'BANDWIDTH', string $address = null)
+    public function freezeBalance(float $amount = 0, int $duration = 3, string $resource = 'BANDWIDTH', ?string $address = null)
     {
         if(empty($address))
             throw new TronException('Address not specified');
@@ -292,7 +292,7 @@ class TransactionBuilder
      * @return array
      * @throws TronException
      */
-    public function unfreezeBalance(string $resource = 'BANDWIDTH', string $owner_address = null)
+    public function unfreezeBalance(string $resource = 'BANDWIDTH', ?string $owner_address = null)
     {
         if(is_null($owner_address)) {
             throw new TronException('Owner Address not specified');

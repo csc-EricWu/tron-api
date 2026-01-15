@@ -28,6 +28,10 @@ trait TronAwareTrait
      */
     public function toHex($str)
     {
+        // Tron hex address (0x41 + 20 bytes) should pass through unchanged
+        if (is_string($str) && strlen($str) === 42 && mb_substr($str, 0, 2) === '41') {
+            return $str;
+        }
         if(mb_strlen($str) == 34 && mb_substr($str, 0, 1) === 'T') {
             return $this->address2HexString($str);
         };

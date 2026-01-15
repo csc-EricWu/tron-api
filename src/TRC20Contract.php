@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace IEXBase\TronAPI;
 
-use Comely\DataTypes\BcNumber;
 use IEXBase\TronAPI\Exception\TRC20Exception;
 use IEXBase\TronAPI\Exception\TronException;
 
@@ -91,7 +90,7 @@ class TRC20Contract
      * @param string $contractAddress
      * @param string|null $abi
      */
-    public function __construct(Tron $tron, string $contractAddress, string $abi = null)
+    public function __construct(Tron $tron, string $contractAddress, ?string $abi = null)
     {
         $this->_tron = $tron;
 
@@ -245,7 +244,7 @@ class TRC20Contract
      * @throws TRC20Exception
      * @throws TronException
      */
-    public function balanceOf(string $address = null, bool $scaled = true): string
+    public function balanceOf(?string $address = null, bool $scaled = true): string
     {
         if(is_null($address))
             $address = $this->_tron->address['base58'];
@@ -273,7 +272,7 @@ class TRC20Contract
      * @throws TRC20Exception
      * @throws TronException
      */
-    public function transfer(string $to, string $amount, string $from = null): array
+    public function transfer(string $to, string $amount, ?string $from = null): array
     {
         if($from == null) {
             $from = $this->_tron->address['base58'];
@@ -379,7 +378,9 @@ class TRC20Contract
      */
     protected function decimalValue(string $int, int $scale = 18): string
     {
-        return (new BcNumber($int))->divide(pow(10, $scale), $scale)->value();
+        // Divide integer string by 10^scale using bcmath (avoids comely-io/data-types dependency)
+        $divider = bcpow('10', (string)$scale, 0);
+        return bcdiv($int, $divider, $scale);
     }
 
     /**

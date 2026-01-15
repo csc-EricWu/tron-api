@@ -33,7 +33,7 @@ interface TronInterface
      * @param string $address
      * @return array
      */
-    public function getBalance(string $address = null);
+    public function getBalance(?string $address = null);
 
     /**
      * Query transaction based on id
@@ -60,17 +60,21 @@ interface TronInterface
      * @return array
      * @throws TronException
      */
-    public function sendTransaction(string $to, float $amount, string $from = null);
+    public function sendTransaction(string $to, float $amount, ?string $from = null);
 
     /**
      * Modify account name
      * Note: Username is allowed to edit only once.
      *
-     * @param $address
-     * @param $account_name
+     * Backward compatible signature:
+     * - changeAccountName($address, $accountName)
+     * - changeAccountName($accountName) // uses current address
+     *
+     * @param string $addressOrName
+     * @param string|null $accountName
      * @return array
      */
-    public function changeAccountName(string $address = null, string $account_name);
+    public function changeAccountName(string $addressOrName, ?string $accountName = null);
 
     /**
      * Create an account.
@@ -115,7 +119,7 @@ interface TronInterface
      * @param bool $hex
      * @return array
      */
-    public function validateAddress(string $address, bool $hex = false);
+    public function validateAddress(?string $address = null, bool $hex = false);
 
     /**
      * Generate new address
